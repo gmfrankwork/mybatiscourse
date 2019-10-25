@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.cache.CacheEmployeeMapper">
+  <!--  <cache></cache>-->
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
+   <!-- Employee getEmpById(Integer id);-->
+    <select id="getEmpById" resultType="com.mybatis.day1.Employee" flushCache="false">
+        select * from employee where id=#{id}
+    </select>
+
+   <!-- void addEmployee(Employee employee);-->
+
+    <insert id="addEmployee" flushCache="true">
+
+        insert into employee(id,last_name,email,gender) values(#{id},#{lastName},#{email},#{gender})
+    </insert>
+
+
+</mapper>

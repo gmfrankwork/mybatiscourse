@@ -1,0 +1,224 @@
+springmvc  spring  jdbc
+开发步骤：
+	1：Spring+Springmvc  环境搭好 jar包 配置文件  启动正常  代码拷贝  登录  productList
+	2: onlineshop  servlet+jsp+jdbc handler  jdbc  JdbcTemplate (SpringHandler) 
+			service方法  return
+			ProductHandler  {
+					@Autowired
+					private  ProductService  productService;
+					public String listProduct(HttpServletRequest request){
+							List<Product> productList = productService.findAll();
+							//作用域传值  map  modelandview modle
+							request.setAttribute("productList",productList) ;
+							return "productList"
+					}
+					UserDao{
+						@select("select * from user where name= and password=")
+						User login(String name ,String password)
+					}
+					public String login(String name,String password){
+							User user = userService.login(name,password);
+							//作用域传值  map  modelandview modle
+							request.setAttribute("productList",productList) ;
+							return "productList"
+					}
+					public String register(User user){
+							 userService.register(user);
+							//作用域传值  map  modelandview modle
+							request.setAttribute("productList",productList) ;
+							return "productList"
+					}
+			}
+		3:工具(idea ---eclipse)：idea 时间  google baidu。
+				1：运行的到底是什么代码   output 文件夹里面是有你项目的结构
+				2：jar包是否真的发布到我们项目里面去了 output 文件夹里面lib，lib有没有jar包
+				3：项目运行的时候和你开发环境已经没有任何关系
+=================================================================================
+1：ORM MyBatis  Spring +Springmvc +mybatis     (hibernate juqery  maven  gitsvn)
+MyBatis:
+	MyBatis 背景介绍
+	MyBatis 环境搭建
+	MyBatis config 配置
+	MyBatis 数据库的操作  查询(关联查询) Employee  Dept  
+	MyBatis 动态 SQL  类似于jstl中 c:if c:choose 
+	MyBatis 缓存技术
+	MyBatis 反向工程 根据sql  handler  目前你还用不到 开发里面 hibernate mybatis 开发效率快
+	MyBatis 背景介绍 ：
+		1：持久层框架
+				1:持久化层 DAO 直接和数据库交互 持久层解决方案：io jdbc hibernate mybatis jpa
+					可能啥都不用，自己封装数据库访问层
+				2:MyBatis避免了几乎所有的JDBC代码和手动设置参数以及获取结果集，Mybatis把jdbc的
+					操作的步骤进行封装.
+					jdbc： addUser(User user)  addProduct(Product product)  ----JdbcTemplate.save(Object)
+					1:事务提交。设置更简单了  
+				3：MyBatis可以使用简单的XML或注解用于配置和原 始映射，将接口和Java的P0J0（
+					 Plain Old Java Objects，普通的Java对象）映射成数据库中的记 
+					 User							 			test									user
+					 id name password				aa  bb  cc						id name password
+					 1   admin  admin
+					 介质    user  ===aa     id ==cc  password bb
+					 mybatis :1：把我们的sql写到配置文件去 ，在文件就指定了你操作的表和列
+					 					2：类上面加注解(sql)
+					 					
+				4:是Apache的开源项目iBatis, 2010年6月这 个项目由 Apache Software Foundation 
+				迁移到了 Google Code，随着开发团队转投Google Code 旗下，iBatis3.x正式更名为MyBatis，
+				代码于 2013年11月迁移到Github (gitlab)。 简历：https://www.github.com/pangfei
+				开发的项目：github
+				5:为什么要使用MyBatis ?
+					1)：MyBatis是一个半自动化的持久化层框架。
+						针对sql的全自动半自动
+						1:全自动  :sql可以不用写，系统自动生成。 hibernate访问数据库    如果不懂sql
+								User user = new User();
+								session.save(user)=====insert into user values(?,?,?)
+								select 条件   工具类面向实体
+								支持：sql hql 面向实体
+						2:半自动：sql文件必须要自己写，其他框架帮你实现  访问数据库  
+								具体和数据库的操作你要自己实现：数据库的操作 发的sql
+								mybatis：如果你不会sql 那基本用mybatis不太现实  sql要求你还比较高
+					2)：JDBC  jdbcTemplate
+							问题：我用jdbc、jdbcTemplate去实现了一个接口，之前是给对象插入的都是5个值
+										变了有一列是废弃了？？？
+							1:jdbc：sql写在哪里 
+							2：jdbcTemplate sql写哪里
+							insert into user values(?,?,?,?,?)----变成insert into user values(?,?,?,?)
+							修改源代码----->sql放到配置文件---->代码取配置文件中的sql
+							1：hibernate 直接全部干掉
+							2：mybatis :sql-配置文件----修改配置文件
+					3): Hibernate 和 JPA
+							1、长难复杂SQL，对于Hibernate而言处理也不容易
+						  2、内部自动生产的SQL，不容易做特殊优化。
+							3、基于全映射的全自动框架，大量字段的POJO进行部分映射时比较困难。 导致数据库性能下降。
+							4、对开发人员而言，核心sql还是需要自己优化
+							5、sql和java编码分开，功能边界清晰，一个专注业务、 一个专注数据
+							6、JPA是Java Persistence API的简称，中文名Java持久层API
+								1:DAO  JDBC  JdbcTemplate mybatis  hibernate
+									java ---jdbc---db
+									java---mybatis---db
+									java----hibernate--db
+									java  -----jpa的api  jdbc、mybatis、mybatis  ----数据库
+					6：https://github.com/mybatis/mybatis-3/
+						 编码步骤：
+						 		1：导入jar文件 3个 mybatis  log4j  mysql
+						 		2：配置两个xml  mybaits-config.xml   mapper.xml都要符合dtd规范
+						 		3: 创建SqlSessionFactory
+						 		4：创建SqlSession(session)
+						 		5：直接访问
+				  7： mybatis建议：
+				  			1：mapper的xml文件名称和接口名称一样
+				  			2：mapper的xml文件和接口放在同一个目录下
+				  			3：也可以把mapper放在专门放xml的目录下
+				  			4；mapper的xml文件的namesapce这个是就是mapper的全路径的名称（接口全路径+接口名）
+				  			5：mapper文件的id要和mapper(接口的方法方法名一致)
+				 8： sqlSession = sqlSessionFactory.openSession(true);
+				 			1：没有给true 无参数 需要自己commit
+				 			2：给了true mybatis会自动提交
+				 	
+	==============================================================================================
+	1：mybaits介绍：数据访问层  ORM Hibernate Jpa jdbc   basicdao : 半自动   sql文件  sql 和java代码脱离
+	2; mybaits开发步骤： mybatis-config.xml  mapper.xml jar
+	3：sqlSession
+	4：细节  mapperxml的时候  ： xml文件名和接口同名   xml的id和接口方法相同
+	        如何让接口和xml进行绑定：接口对应的xml  方法对应是什么
+	       <!-- <mapper resource="com/mybatis/config/EmployeeMapper.xml"/>-->
+            <!--    <mapper resource="com/mybatis/config/EmployeeMapper.xml"></mapper>-->
+            <!--这里注册的是接口意味：你的xml文件名要和接口名相同，必须在同一个包下-->
+           <!-- <mapper class="com.mybatis.day1.dao.EmployeeMapper"></mapper>
+            <mapper class="com.mybatis.day1.dao.EmployeeMapperAn"></mapper>-->
+            <!--批量注册别名 类名小写-->
+            <package name="com.mybatis.day1.dao"/>
+    5：配置 references 文档配置  别名
+    6：curd  主键生成  mysql自增   oralce sequence  after before：取好值 赋值javabean的属性 #{id}  seq.nextval
+        before 查sequences  jd
+    7：参数
+            1：方法只有一个参数
+                Employee getEmpById(Integer id)  #{id}
+            2: pojo
+                    #{pojo属性值}
+            3： 大于1参数
+                    封装成一个map #{id},#{lastName} 参数不对 #{key}  value
+                    index 0 1 param1 param2 #{param1}
+                    @param标签     #{param的值}
+                    key:param1  value:真正传入的值
+            4: map:通过key去取值  ${}sql注入问题 #{}没有
+    8：返回值
+            1：void
+            2：Employee
+            3: List
+            4: Map
+                返回是map并且map中只有一个元素那么： key 列名  value 值
+                返回的是多个值 需要你给定key的名称 在你的接口 Mapper
+            总结： 参数 返回值
+            ssm(Spring springmvc mybaits)
+    9：关联查询
+            1:o2o o2m  m2m  ======员工和部门
+                1：o2o 一对多特例   把外键加上唯一约束     一对多在多的一方加上一的外键
+                2：o2m  员工部门
+                3：m2m student course   这个是需要中间表 o2m  o2m 中间表
+                4：外键（外键）
+
+    10:查询员工的是把部门表带出来  一
+            1：关联查询
+            2：分步查询  查出员工 -----得到我们的部门号-----查部门
+            3：查部门 带出员工
+     11:延迟加载：
+            1：如果把延迟加载去掉
+                    ${order.user.info.phone}----->查询结果的是 得到order的时候
+            2：hibernate
+            3：提高查询效率 ; 缓存
+
+     动态sql 和 传统sql
+        1：动态sql相对而言要比传统sql处理周到
+        2:开发里面不光在数据层处理，handler 我直接提示你出什么问题
+
+MyBatis缓存：
+    1:一级缓存:sqlSession
+            1:保证是同一个sqlSession
+            2：sqlsession关闭了 一级缓存没有
+            3:当我们在一级缓存中记性insert update delete 清空缓存
+
+            Employee employee1 = cacheEmployeeMapper.getEmpById(1);
+            System.out.println(employee1);
+
+            Employee employee2 = cacheEmployeeMapper.getEmpById(1);
+            System.out.println(employee2);
+
+            1:id 为一号的员工  有结果他返回，把这个结果默认放在sqlsession中
+            2：会看二级缓存中是否有，再去一级缓存中找有没之前查过的， 没有查过直接发sql  查过直接把内存地址给你。
+    2:二级缓存
+        1:pojo 实现序列化接口
+        2：mybatis-cofig.xml 配置   <setting name="cacheEnabled" value="true"/>
+        3：在我们的xml文件配置 <cache>
+        4: 每个xml对应自己缓存区域
+        5：只有sqlsesion关闭了数据才会进二级缓存。
+    3:第三方的缓存
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					 					  

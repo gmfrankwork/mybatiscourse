@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.day3.EmployeeDyMapper">
+   <!-- List<Employee> findByIf(Employee employee);
+     private Integer id;
+     private String lastName;
+     private String email;
+     private String gender;
+   -->
+    <select id="findByIf" resultType="com.mybatis.day1.Employee">
+        <!-- where 只能解决and 或者是 or 放在前面的-->
+        select * from employee
+        <where>
+          <if test="lastName!=null">
+              and  last_name = #{lastName}
+          </if>
+        <if test="email!=null">
+            and email = #{email}
+        </if>
+        <if test="gender!=null">
+            and  gender = #{gender}
+        </if>
+        <if test="id!=null">
+            and  id = #{id}
+        </if>
+        </where>
+    </select>
+  <!--  List<Employee> findByTrim(Employee employee);-->
+    <select id="findByTrim" resultType="com.mybatis.day1.Employee">
+        <!-- 	prefix="":前缀：trim标签体中是整个字符串拼串 后的结果。
+	 			prefix给拼串后的整个字符串加一个前缀
+	 	prefixOverrides="":
+	 			前缀覆盖： 去掉整个字符串前面多余的字符
+	 	suffix="":后缀
+	 			suffix给拼串后的整个字符串加一个后缀
+	 	suffixOverrides=""
+	 			后缀覆盖：去掉整个字符串后面多余的字符-->
+        select * from employee
+
+            <trim prefix="where"  suffixOverrides="and">
+            <if test="lastName!=null">
+                  last_name = #{lastName} and
+            </if>
+            <if test="email!=null">
+                email = #{email}  and
+            </if>
+            <if test="gender!=null">
+                 gender = #{gender} and
+            </if>
+            <if test="id!=null">
+                 id = #{id}
+            </if>
+            </trim>
+    </select>
+
+  <!--  findByChoose-->
+
+    <select id="findByChoose" resultType="com.mybatis.day1.Employee">
+
+        select * from employee where
+        <choose>
+            <when test="id != null">
+                id  = #{id}
+            </when>
+            <when test="email != null">
+                email  = #{email}
+            </when>
+            <when test="lastName != null">
+                last_name  = #{lastName}
+            </when>
+            <otherwise>
+                gender =1
+            </otherwise>
+        </choose>
+
+
+    </select>
+
+
+    <!--updateEmp-->
+
+    <update id="updateEmp">
+        update employee
+        <set>
+        <if test="lastName!=null">
+            last_name=#{lastName},
+        </if>
+        <if test="email!=null">
+            email=#{email},
+        </if>
+        <if test="gender!=null">
+            gender=#{gender}
+        </if>
+        </set>
+        where id =#{id}
+    </update>
+
+
+
+    <!--List<Employee> findByIds(List ids);-->
+
+    <select id="findByIds" resultType="com.mybatis.day1.Employee">
+
+        select * from employee
+        <foreach collection="ids" item="id" separator=","  close=")" open="where id in(">
+            #{id}
+        </foreach>
+
+    </select>
+
+   <!-- void  addEmpBatch(List<Employee> emps);
+   allowMultiQueries=true
+   -->
+
+    <insert id="addEmpBatch">
+       <!--insert into employee values(8,"jackma","jackma@126.com","1"),(9,"ouwen","owen@126.com","0");
+        begin
+         oracle
+       -->
+        insert into employee (id,last_name,email,gender)values
+        <foreach collection="emps" item="emp" separator=",">
+            (#{emp.id},#{emp.lastName},#{emp.email},#{emp.gender})
+        </foreach>
+
+    </insert>
+
+   <!-- List<Employee> findByLikeLastName(Employee employee);-->
+
+        <select id="findByLikeLastName" resultType="com.mybatis.day1.Employee">
+            <bind name="hello" value="'%'+lastName+'%'"/>
+            select * from employee
+            <if test="_parmater != null">
+            where last_name like #{hello}
+            </if>
+        </select>
+
+
+   <!-- Employee findById(Integer id);-->
+
+        <select id="findById" resultType="com.mybatis.day1.Employee">
+
+            <!--select last_name,gender,email from employee where id=#{id}-->
+
+            select <include refid="empproperty"/> from employee where id=#{id}
+
+        </select>
+    <sql id="empproperty">
+            last_name,gender,email
+    </sql>
+</mapper>
+
+
+
+
+

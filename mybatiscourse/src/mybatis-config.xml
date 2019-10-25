@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="dbinfo.properties"></properties>
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <!-- 如果用到mybaits默认的属性我们也应该去写到mybaits-config.xml文件中-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+    <typeAliases>
+        <!--<typeAlias type="com.mybatis.day1.Employee" alias="emp"/>-->
+        <package name="com.mybatis.day1"/>
+    </typeAliases>
+
+    <environments default="devmysql">
+        <environment id="devmysql">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+            </dataSource>
+        </environment>
+        <environment id="devoracle">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="${oracle.driver}"/>
+                <property name="url" value="${oracle.url}"/>
+                <property name="username" value="${oracle.username}"/>
+                <property name="password" value="${oracle.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <databaseIdProvider type="DB_VENDOR">
+        <property name="SQL Server" value="sqlserver"/>
+        <property name="DB2" value="db2"/>
+        <property name="Oracle" value="oracle" />
+        <property name="MySQL" value="mysql"/>
+    </databaseIdProvider>
+    <mappers>
+        <!-- <mapper resource="com/mybatis/config/CacheEmployeeMapper.xml"/>-->
+        <!--    <mapper resource="com/mybatis/config/CacheEmployeeMapper.xml"></mapper>-->
+        <!--这里注册的是接口意味：你的xml文件名要和接口名相同，必须在同一个包下-->
+        <!-- <mapper class="com.mybatis.day1.dao.EmployeeMapper"></mapper>
+         <mapper class="com.mybatis.day1.dao.EmployeeMapperAn"></mapper>-->
+        <!--批量注册别名 类名小写-->
+        <mapper resource="com/mybatis/day2/EmployeeParamMapper.xml"/>
+        <mapper resource="com/mybatis/day3/EmployeeDyMapper.xml"/>
+        <mapper resource="com/mybatis/day2/EmployeeLazyMapper.xml"/>
+        <mapper resource="com/mybatis/cache/CacheEmployeeMapper.xml"/>
+        <mapper resource="com/mybatis/day2/DepartmentLazyMapper.xml"/>
+        <mapper resource="com/mybatis/dao/ProductMapper.xml"/>
+        <mapper resource="com/mybatis/dao/CategoryMapper.xml"/>
+
+    </mappers>
+</configuration>

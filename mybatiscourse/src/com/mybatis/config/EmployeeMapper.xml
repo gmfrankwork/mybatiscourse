@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.day1.dao.EmployeeMapper">
+    <select id="getEmpById" resultType="emp" databaseId="mysql">
+    <!--#{id}
+        1：支持OGNL的表达式 #{id}  在这里单个参数的时候就是代表传入的值的参数 这里可以随便写
+        2：用户名没有
+            select * from employee   列：id last_name  email  gender   对象属性赋值
+            一般情况下为了不必要的麻烦，最好属性名和sql的列名相同，但是也可以不同 这里也不用写，但是要配置驼峰命名规范
+            lastName  列名数据库last_Name===lastName（属性）
+    -->
+       select * from employee where id = #{id}
+       <!--select  loc email ,dname lastName from dept  where deptno=#{id}-->
+
+    </select>
+    <select id="getEmpById" resultType="emp" databaseId="oracle">
+        select  loc email ,dname lastName from dept  where deptno=#{id}
+    </select>
+    <!-- pojo传进来 那参数就是列名-->
+    <!--void addEmployee(Employee employee);-->
+    <insert id="addEmployee" parameterType="com.mybatis.day1.Employee">
+            insert into employee values(#{id},#{lastName},#{email},#{gender})
+    </insert>
+   <!-- void delelteEmpById(Integer id);-->
+    <delete id="delelteEmpById">
+        delete from employee where id=#{id}
+    </delete>
+
+    <!--void updateEmp(Employee employee);-->
+    <update id="updateEmp">
+        update employee set last_name=#{lastName},gender=#{gender},email=#{email} where id=#{id}
+    </update>
+    <!--List findAll();
+        查询的时候要么给resultType或者是resultMap
+        jdbc 关联查询
+        接口返回值是List  那么resultType就集合里面装的元素的类型
+    -->
+    <select id="findAll" resultType="com.mybatis.day1.Employee">
+        select * from employee
+    </select>
+    <!--Employee findByNameAndEmail(String lastName,String email);-->
+    <select id="findByNameAndEmail" resultType="com.mybatis.day1.Employee">
+        select id,last_name lastName,email,gender from employee where last_name=#{lastName} and email=#{email}
+<!-- select id,last_name lastName,email,gender from employee where last_name=#{0} and email=#{1}
+        select id,last_name lastName,email,gender from employee where last_name=#{param1} and email=#{param2}-->
+    </select>
+    <!--void addEmployee(Employee employee); 使用mysql自增主键-->
+    <insert id="addEmpByIncrementId" parameterType="com.mybatis.day1.Employee">
+        insert into employee (last_name,email,gender) values(#{lastName},#{email},#{gender})
+    </insert>
+</mapper>

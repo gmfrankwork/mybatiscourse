@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.ProductMapper">
+
+    <resultMap id="prostep" type="com.mybatis.pojo.Product">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <association property="category" javaType="com.mybatis.pojo.Category"
+                     select="com.mybatis.dao.CategoryMapper.findCategoryByIdStep" column="cate_id"></association>
+    </resultMap>
+
+    <select id="findByIdStep" resultMap="prostep">
+
+        select * from tbl_product where id=#{id}
+    </select>
+</mapper>
